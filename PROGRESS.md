@@ -44,3 +44,12 @@ Separate from D:\INSTALEGO and ~/landtitle-diligence-engine by user's choice (op
   Re-test after 1dec0a5 (live): first case 62s (Gemini 45s timeout -> Groq), next case 6s (Gemini skipped 5 min). Works as designed;
   user chose Groq first for opinions (6a31e1a): uncached 3-deed case now 16s end to end, no 429/timeouts in logs; Gemini 3.8 = fallback.
 - Free-hours risk accepted by user: InstaFin runs 24/7 in this workspace (750 h/month shared).
+
+## 2026-11-20 first real Telugu deed (user upload on live site)
+- File: Downloads/"Telugu Sale Deed (Complete Chain of Title).pdf" (2 pages, TEXT layer, so Tesseract not used). Case cf387940-f903-4980-82d3-3d157e1ff371.
+- Extraction checked field by field vs the rendered PDF: doc 4128/2024, 14-08-2024, Kandukuri Venkateswara Rao -> Bommanaboyina Sujata,
+  Sy 142/2A Plot 18 Ward 4 Chinakakani, 240 sq yd, Rs 30,00,000, prior 1194/2012, EC 8892/2024 -> ALL CORRECT. Result 40/CONDITIONAL
+  (2 referenced docs not uploaded - correct, user uploaded only one file).
+- Found: Telugu PDF text layers repeat vowel signs/anusvara (తండ్రిి, డాక్యుుమెంంట్) -> clean.py now collapses repeated signs (test added).
+- NEXT: upload the sibling "Telugu Sale Deed (Missing Link Document).pdf" + a real SCANNED Telugu deed (Tesseract path still untested on real scans).
+  EC referenced as "Doc No. 8892/2024 ... not uploaded" reads slightly odd for an EC - consider wording.

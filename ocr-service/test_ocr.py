@@ -29,6 +29,13 @@ def test_masking():
     assert mask_pii("IN-AP48211930551922X") == "IN-AP48211930551922X"  # embedded in an id, not Aadhaar
 
 
+def test_doubled_telugu_signs_collapse():
+    from clean import clean
+    # as extracted by PyMuPDF from a real Telugu sale deed PDF
+    assert clean(["తండ్రిి వయస్సుు"]) ==         "తండ్రి వయస్సు"
+    assert clean(["క్క"]) == "క్క", "a single virama is untouched"
+
+
 def test_extract_mocks():
     client = TestClient(app)
     files = [("files", (p.stem + ".pdf", to_pdf(p.read_text("utf8")), "application/pdf")) for p in sorted(MOCKS.glob("*.txt"))]
@@ -82,6 +89,7 @@ def test_token_required_when_set():
 
 if __name__ == "__main__":
     test_masking()
+    test_doubled_telugu_signs_collapse()
     test_extract_mocks()
     test_scanned_image_goes_through_tesseract()
     test_token_required_when_set()

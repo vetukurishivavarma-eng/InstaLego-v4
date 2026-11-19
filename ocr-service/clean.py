@@ -72,7 +72,11 @@ def mask_pii(text: str) -> str:
     return PAN.sub(lambda m: f"XXXXX{m.group(1)}", text)
 
 
+# Telugu PDF text layers often repeat a vowel sign/anusvara/virama ("తండ్రిి", "డాక్యుుమెంంట్"); a repeated sign is never valid
+DOUBLED_SIGN = re.compile(r"([ఀ-ఃా-్ౕౖ])\1+")
+
+
 def clean(pages: list[str]) -> str:
-    text = "\n\n".join(strip_boilerplate(pages))
+    text = DOUBLED_SIGN.sub(r"\1", "\n\n".join(strip_boilerplate(pages)))
     text = re.sub(r"\n{3,}", "\n\n", text)
     return mask_pii(dedupe_blocks(text))
