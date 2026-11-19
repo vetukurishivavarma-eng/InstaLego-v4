@@ -28,7 +28,7 @@ payment:
 # Providers are tried top to bottom. A blank api-key skips that provider.
 # All five speak the OpenAI chat-completions format, so one client handles them.
 llm:
-  timeout: 90s
+  timeout: 45s   # a healthy model answers well inside this; overloaded ones fail over to the next provider
   pools:
     map:
       - {name: groq,        base-url: https://api.groq.com/openai/v1,                          api-key: "${GROQ_API_KEY:}",       model: openai/gpt-oss-120b}  # verified live 2026-11-19

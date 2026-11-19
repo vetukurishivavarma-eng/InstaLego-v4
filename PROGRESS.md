@@ -31,3 +31,14 @@ Separate from D:\INSTALEGO and ~/landtitle-diligence-engine by user's choice (op
 - NEXT: on a machine with Docker: cp .env.example .env, add a Groq + Gemini key, `docker compose up --build`, upload mocks as PDFs
   (ocr-service/test_ocr.py's to_pdf) and a real scanned deed; then tune MAP prompt / PaddleOCR lang on real Telugu scans.
 - Decisions: one key per provider (no multi-key quota rotation). (Earlier claim that gemini-3.8-flash is not real was WRONG; it exists and is the Reduce primary.)
+
+## Render deploy (2026-11-19/20) - workspace "Appilication Dev" (tea-d7veehugvqtc73cjtc40), Singapore, all FREE
+- titleproof-cache  Key Value red-dbvk01mc6qcc739mbhm0 -> internal redis://red-dbvk01mc6qcc739mbhm0:6379 (no persistence)
+- titleproof-ocr    srv-dbvk03u0tbcc738obdv0 https://titleproof-ocr.onrender.com (Tesseract tel+eng, X-OCR-Token required;
+                    token in local .env OCR_TOKEN). LIVE-TESTED: 401 without token, scanned PNG read + masked in 12s.
+- titleproof srv-dbvk61gn74is739r3t00 https://titleproof.onrender.com (backend + bundled UI, root Dockerfile, PAYMENT_MODE=mock).
+  DB = Neon (us-east-2, NOT Singapore -> ~1s extra per page; user may recreate in Singapore), direct (non-pooler) endpoint.
+  LIVE E2E 2026-11-20 (scratchpad e2e_live.py): 3 sample PDFs -> 70/DEFECTIVE, chain + name variance, no paid leak, 402 before pay,
+  mock pay -> 6-section opinion + 22 KB PDF, re-upload 6s (cache). Upload took 108s: gemini-3.8-flash timed out (90s) -> Groq wrote
+  the opinion -> timeout now 45s and a timed-out model is skipped 5 min. Cold start ~55s (free plan sleeps after 15 min).
+- Free-hours risk accepted by user: InstaFin runs 24/7 in this workspace (750 h/month shared).

@@ -31,6 +31,7 @@ public class LlmRouterService {
     private static final Logger log = LoggerFactory.getLogger(LlmRouterService.class);
     static final Duration RATE_LIMIT_DEFAULT = Duration.ofSeconds(60);
     static final Duration SERVER_ERROR = Duration.ofSeconds(30);
+    static final Duration TIMED_OUT = Duration.ofMinutes(5); // an overloaded model stays slow for a while; don't make every case wait on it
     static final Duration BAD_KEY = Duration.ofHours(1);
     static final Duration MAX_COOLDOWN = Duration.ofHours(24);
     static final Duration MAX_WAIT = Duration.ofSeconds(60); // ponytail: blocks the request thread (virtual, so cheap); a job queue if waits grow
@@ -101,7 +102,7 @@ public class LlmRouterService {
                 reasons.add(p.name() + ": HTTP " + status);
                 log.warn("LLM {} {} -> HTTP {}, cooldown {}", p.name(), p.model(), status, cool);
             } catch (ResourceAccessException e) {
-                redis.opsForValue().set(p.cooldownKey(), "timeout", SERVER_ERROR);
+                redis.opsForValue().set(p.cooldownKey(), "timeout", TIMED_OUT);
                 reasons.add(p.name() + ": " + e.getMessage());
                 log.warn("LLM {} {} -> {}", p.name(), p.model(), e.getMessage());
             }
