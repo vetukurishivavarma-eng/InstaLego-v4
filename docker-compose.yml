@@ -17,7 +17,10 @@ services:
     volumes: [redisdata:/data]
 
   ocr-service:
-    build: ./ocr-service
+    build:
+      context: ./ocr-service
+      args:
+        OCR_ENGINE: ${OCR_ENGINE:-paddle}  # needs ~1.5 GB RAM; set OCR_ENGINE=tesseract on small machines
     environment:
       OCR_LANG: ${OCR_LANG:-te}
     volumes: [paddlemodels:/root/.paddlex]  # models download once on first scanned page

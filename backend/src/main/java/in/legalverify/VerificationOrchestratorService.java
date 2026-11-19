@@ -69,14 +69,14 @@ public class VerificationOrchestratorService {
 
     public VerificationOrchestratorService(LlmRouterService llm, ChainValidator validator, StringRedisTemplate redis, ObjectMapper json,
                                            CaseRepository cases, CaseDocumentRepository documents, RestClient.Builder builder,
-                                           @Value("${ocr.url}") String ocrUrl) {
+                                           @Value("${ocr.url}") String ocrUrl, @Value("${ocr.token:}") String ocrToken) {
         this.llm = llm;
         this.validator = validator;
         this.redis = redis;
         this.json = json;
         this.cases = cases;
         this.documents = documents;
-        this.ocr = builder.baseUrl(ocrUrl).build();
+        this.ocr = builder.baseUrl(ocrUrl).defaultHeader("X-OCR-Token", ocrToken).build();
     }
 
     public record Upload(String fileName, String tag, byte[] bytes) {}

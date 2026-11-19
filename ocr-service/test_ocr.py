@@ -1,5 +1,6 @@
 """Self-check: run `python test_ocr.py` (or pytest). Builds text-layer PDFs from mocks/sample-deeds, no OCR model needed."""
 import pathlib
+import shutil
 
 import pymupdf
 from fastapi.testclient import TestClient
@@ -53,7 +54,35 @@ def test_extract_mocks():
     assert corrupt.status_code == 422
 
 
+def test_scanned_image_goes_through_tesseract():
+    import app as ocr_app
+    if not shutil.which(ocr_app.TESSERACT_CMD):
+        print("skip: tesseract not installed")
+        return
+    doc = pymupdf.open()
+    doc.new_page().insert_textbox(pymupdf.Rect(40, 40, 555, 800),
+                                  "SALE DEED No. 2345/2012\nSurvey No. 123/4A\nAadhaar 4821 7730 5519", fontsize=14)
+    png = doc[0].get_pixmap(dpi=150).tobytes("png")  # an image has no text layer, so it must be OCR'd
+    t = ocr_app.extract("scan.png", png)["cleaned_text"]
+    assert "2345/2012" in t and "123/4A" in t, t
+    assert "4821" not in t and "XXXX-XXXX-5519" in t, t
+
+
+def test_token_required_when_set():
+    import app as ocr_app
+    client = TestClient(app)
+    ocr_app.OCR_TOKEN = "s3cret"
+    try:
+        f = [("files", ("x.docx", b"hi", "application/octet-stream"))]
+        assert client.post("/api/ocr/extract", files=f).status_code == 401
+        assert client.post("/api/ocr/extract", files=f, headers={"X-OCR-Token": "s3cret"}).status_code == 415
+    finally:
+        ocr_app.OCR_TOKEN = ""
+
+
 if __name__ == "__main__":
     test_masking()
     test_extract_mocks()
+    test_scanned_image_goes_through_tesseract()
+    test_token_required_when_set()
     print("ok")

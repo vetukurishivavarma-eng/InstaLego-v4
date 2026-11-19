@@ -15,7 +15,9 @@ spring:
   threads.virtual.enabled: true
   jackson.property-naming-strategy: SNAKE_CASE
 
-ocr.url: ${OCR_SERVICE_URL:http://localhost:8000}
+ocr:
+  url: ${OCR_SERVICE_URL:http://localhost:8000}
+  token: ${OCR_TOKEN:}
 
 payment:
   mode: ${PAYMENT_MODE:mock}          # mock | razorpay

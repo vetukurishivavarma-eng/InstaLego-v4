@@ -93,7 +93,7 @@ class PipelineTest {
                 "map", List.of(new LlmProperties.Provider("groq", base + "/groq", "k", "m"), new LlmProperties.Provider("cerebras", base + "/cerebras", "k", "m")),
                 "reduce", List.of(new LlmProperties.Provider("gemini", base + "/gemini", "k", "m"))));
         var router = new LlmRouterService(props, redis, json, builder());
-        orchestrator = new VerificationOrchestratorService(router, new ChainValidator(), redis, json, cases, documents, builder(), base + "/ocr");
+        orchestrator = new VerificationOrchestratorService(router, new ChainValidator(), redis, json, cases, documents, builder(), base + "/ocr", "");
         controller = new CaseController(cases, orchestrator, new PaymentService("mock", "", "", 499, builder()), json);
     }
 
