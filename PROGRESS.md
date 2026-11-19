@@ -42,5 +42,5 @@ Separate from D:\INSTALEGO and ~/landtitle-diligence-engine by user's choice (op
   mock pay -> 6-section opinion + 22 KB PDF, re-upload 6s (cache). Upload took 108s: gemini-3.8-flash timed out (90s) -> Groq wrote
   the opinion -> timeout now 45s and a timed-out model is skipped 5 min. Cold start ~55s (free plan sleeps after 15 min).
   Re-test after 1dec0a5 (live): first case 62s (Gemini 45s timeout -> Groq), next case 6s (Gemini skipped 5 min). Works as designed;
-  if Gemini stays overloaded, consider putting Groq first in the reduce pool.
+  user chose Groq first for opinions (6a31e1a): uncached 3-deed case now 16s end to end, no 429/timeouts in logs; Gemini 3.8 = fallback.
 - Free-hours risk accepted by user: InstaFin runs 24/7 in this workspace (750 h/month shared).
