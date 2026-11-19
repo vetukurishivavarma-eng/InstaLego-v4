@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-serif: "Source Serif 4 Variable", Georgia, serif;
+  --color-paper: #f7f5f0;
+  --color-card: #fffdf9;
+  --color-rule: #e4dfd3;
+  --color-ink: #1c2230;
+  --color-muted: #6b6f7a;
+  --color-navy: #1f3a5f;
+  --color-clear: #2f7d4f;
+  --color-cond: #b7791f;
+  --color-defect: #b4372f;
+}
+
+body {
+  @apply bg-paper text-ink font-sans antialiased;
+}
+
+h1, h2, h3 {
+  @apply font-serif;
+}

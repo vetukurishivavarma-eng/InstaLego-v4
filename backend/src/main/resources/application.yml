@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/legalverify}
+    username: ${SPRING_DATASOURCE_USERNAME:legalverify}
+    password: ${SPRING_DATASOURCE_PASSWORD:change-me}
+  jpa:
+    hibernate.ddl-auto: update
+    open-in-view: false
+  data.redis:
+    host: ${SPRING_DATA_REDIS_HOST:localhost}
+    port: 6379
+  servlet.multipart:
+    max-file-size: 25MB
+    max-request-size: 200MB
+  threads.virtual.enabled: true
+  jackson.property-naming-strategy: SNAKE_CASE
+
+ocr.url: ${OCR_SERVICE_URL:http://localhost:8000}
+
+payment:
+  mode: ${PAYMENT_MODE:mock}          # mock | razorpay
+  key-id: ${RAZORPAY_KEY_ID:}
+  key-secret: ${RAZORPAY_KEY_SECRET:}
+  price-inr: ${UNLOCK_PRICE_INR:499}
+
+# Providers are tried top to bottom. A blank api-key skips that provider.
+# All five speak the OpenAI chat-completions format, so one client handles them.
+llm:
+  timeout: 90s
+  pools:
+    map:
+      - {name: groq,        base-url: https://api.groq.com/openai/v1,                          api-key: "${GROQ_API_KEY:}",       model: openai/gpt-oss-120b}  # verified live 2026-11-19
+      - {name: cerebras,    base-url: https://api.cerebras.ai/v1,                              api-key: "${CEREBRAS_API_KEY:}",   model: gpt-oss-120b}  # unverified: no key yet
+      - {name: gemini,      base-url: https://generativelanguage.googleapis.com/v1beta/openai, api-key: "${GEMINI_API_KEY:}",     model: gemini-3.5-flash-lite}  # verified live 2026-11-19 (2.5 models closed to new keys)
+      - {name: mistral,     base-url: https://api.mistral.ai/v1,                               api-key: "${MISTRAL_API_KEY:}",    model: mistral-small-latest}
+      - {name: openrouter,  base-url: https://openrouter.ai/api/v1,                            api-key: "${OPENROUTER_API_KEY:}", model: "meta-llama/llama-3.3-70b-instruct:free"}
+    reduce:
+      # gemini-3.1-pro-preview / gemini-pro-latest: free-tier quota is 0, so not listed
+      - {name: gemini-flash, base-url: https://generativelanguage.googleapis.com/v1beta/openai, api-key: "${GEMINI_API_KEY:}", model: gemini-3.8-flash}  # verified live 2026-11-19
+      - {name: groq,        base-url: https://api.groq.com/openai/v1,                          api-key: "${GROQ_API_KEY:}",       model: openai/gpt-oss-120b}
+      - {name: mistral-large, base-url: https://api.mistral.ai/v1,       api-key: "${MISTRAL_API_KEY:}",    model: mistral-large-latest}
+      - {name: openrouter,  base-url: https://openrouter.ai/api/v1,                            api-key: "${OPENROUTER_API_KEY:}", model: "meta-llama/llama-3.3-70b-instruct:free"}
